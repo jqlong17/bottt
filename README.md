@@ -8,7 +8,15 @@ Click the body and it copies a mode-specific English prompt to the clipboard, th
 
 There are two click modes. Summary mode asks another chat to turn the conversation into a short spoken paragraph and then have BOTTT read it. Diary mode asks that chat to write a short English desktop diary entry with a title and a date, and after the entry is done the pet looks happy for a moment. The copied prompt prefers the BOTTT MCP tools when the client has them, and falls back to the local shell command otherwise. The path written into that fallback is filled in when you click, pointing at `BOTTT.app/Contents/Resources/bottt` for the copy you actually launched, so it is never a hard-coded home directory.
 
-Through the day it picks up small moods of its own: around noon and in the evening its expression shifts, in the morning it looks ready for something to do, and once in a while it puts on a busy face. Settings also lets you pick a look—square eyes, glasses, smile, mustache, sharp eyes, wizard, party, chef, heart, flag, or a dizzy spiral.
+Through the day it picks up small moods of its own: around noon and in the evening its expression shifts, in the morning it looks ready for something to do, and once in a while it puts on a busy face. Settings also lets you pick a look; each one is drawn as flat pixels on the same body, so the wallpaper still shows through around the silhouette.
+
+| Square eyes | Glasses | Smile | Mustache |
+| :---: | :---: | :---: | :---: |
+| ![Square eyes](docs/looks/default.png) | ![Glasses](docs/looks/glasses.png) | ![Smile](docs/looks/smile.png) | ![Mustache](docs/looks/mustache.png) |
+| Sharp eyes | Wizard | Party | Chef |
+| ![Sharp eyes](docs/looks/sharp.png) | ![Wizard](docs/looks/wizard.png) | ![Party](docs/looks/party.png) | ![Chef](docs/looks/chef.png) |
+| Heart | Flag | Dizzy | |
+| ![Heart](docs/looks/heart.png) | ![Flag](docs/looks/flag.png) | ![Dizzy](docs/looks/dizzy.png) | |
 
 What actually speaks is the running app’s local mouth: a Unix socket that both the bundled `bottt say` CLI and the MCP server talk to. There is no network API. Cursor, Codex, WorkBuddy, Qoder, or any other tool that can run a shell command on your Mac can still drive it with `bottt say` and `bottt smile`. Clients that support MCP can instead connect the stdio server under `mcp/` and call the tools `speak`, `smile`, and `get_status`. MCP only remotes the mouth; it does not launch the pet. If BOTTT.app is not open, both paths return a clear “not running” error.
 

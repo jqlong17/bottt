@@ -8,7 +8,15 @@ BOTTT 是一只待在 macOS 桌面上的透明像素宠物。壁纸从扁扁的�
 
 点击有两种模式。总结模式让另一个对话把当前聊天收成一小段口语，再让 BOTTT 读出来。日记模式则让那边写成一篇桌面上的英文日记，带着标题和日期；日记写完之后，它会开心一下。复制出来的提示词会优先建议走 BOTTT 的 MCP 工具；客户端没有 MCP 时，再退回本机 shell 命令。提示词里的路径是点击那一下填进去的，指向你正在用的 `BOTTT.app/Contents/Resources/bottt`，不会写死某个用户的家目录。
 
-白天它还会自己换一点心情：中午和傍晚表情会变，早上看起来想活动，偶尔摆出忙碌的样子。设置里也可以换形象——方眼、眼镜、微笑、胡子、尖眼、巫师、派对、厨师、爱心、旗，或者头晕螺旋。
+白天它还会自己换一点心情：中午和傍晚表情会变，早上看起来想活动，偶尔摆出忙碌的样子。设置里也可以换形象；每种都还是同一具扁扁的身体，只改脸上的像素和头顶的小物件，壁纸照样从轮廓缝里露出来。
+
+| 方眼 | 眼镜 | 微笑 | 胡子 |
+| :---: | :---: | :---: | :---: |
+| ![方眼](docs/looks/default.png) | ![眼镜](docs/looks/glasses.png) | ![微笑](docs/looks/smile.png) | ![胡子](docs/looks/mustache.png) |
+| 尖眼 | 巫师 | 派对 | 厨师 |
+| ![尖眼](docs/looks/sharp.png) | ![巫师](docs/looks/wizard.png) | ![派对](docs/looks/party.png) | ![厨师](docs/looks/chef.png) |
+| 爱心 | 旗 | 头晕螺旋 | |
+| ![爱心](docs/looks/heart.png) | ![旗](docs/looks/flag.png) | ![头晕螺旋](docs/looks/dizzy.png) | |
 
 真正出声靠的是正在跑的 App 本机通道：Unix socket。捆绑的 `bottt say` 和仓库里的 MCP server 都往这条通道写，不是网上的 API。Cursor、Codex、WorkBuddy、Qoder，以及任何能在你这台 Mac 上执行命令的工具，仍可以用 `bottt say` / `bottt smile` 驱动它；支持 MCP 的客户端则可以接上 `mcp/` 下的 stdio server，调用工具 `speak`、`smile`、`get_status`。MCP 只是远程控制嘴，不会替你打开宠物。App 没开时，两条路都会明确报错。
 
