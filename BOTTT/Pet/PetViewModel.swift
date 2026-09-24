@@ -262,10 +262,16 @@ enum BotttPaths {
         return nil
     }
 
-    /// 这次编译写到仓库 `.build/bottt` 的绝对路径。换一台机器、换一个目录，点出来的路径就跟着变。
+    /// 点击这一下时，本机 `bottt` 可执行文件的绝对路径。换一台机器、换一个目录，点出来的路径就跟着变。
     static func sayExecutable() -> String {
-        guard let root = repositoryRoot() else { return ".build/bottt" }
-        return root.appendingPathComponent(".build/bottt").path
+        if let root = repositoryRoot() {
+            return root.appendingPathComponent(".build/bottt").path
+        }
+        return Bundle.main.bundleURL
+            .deletingLastPathComponent()
+            .appendingPathComponent("bottt")
+            .standardizedFileURL
+            .path
     }
 
     static func pythonExecutable() -> String? {
