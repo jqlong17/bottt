@@ -197,12 +197,12 @@
 			);
 			name = "Embed bottt";
 			outputPaths = (
-				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/Contents/MacOS/bottt",
+				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/Contents/Resources/bottt",
 				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/Contents/Resources/tts/speech_worker.py",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\nAPP=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\nmkdir -p \"${APP}/Contents/MacOS\" \"${APP}/Contents/Resources/tts\"\ncp -f \"${BUILT_PRODUCTS_DIR}/bottt\" \"${APP}/Contents/MacOS/bottt\"\nchmod +x \"${APP}/Contents/MacOS/bottt\"\ncp -f \"${SRCROOT}/tts/speech_worker.py\" \"${APP}/Contents/Resources/tts/speech_worker.py\"\ncodesign --force --sign - \"${APP}/Contents/MacOS/bottt\"\n";
+			shellScript = "set -e\nAPP=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\nmkdir -p \"${APP}/Contents/Resources/tts\"\ncp -f \"${BUILT_PRODUCTS_DIR}/bottt\" \"${APP}/Contents/Resources/bottt\"\nchmod +x \"${APP}/Contents/Resources/bottt\"\ncp -f \"${SRCROOT}/tts/speech_worker.py\" \"${APP}/Contents/Resources/tts/speech_worker.py\"\ncodesign --force --sign - \"${APP}/Contents/Resources/bottt\"\n";
 		};
 		B07100000000000000000015 /* Copy bottt */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -19,7 +19,7 @@ Supertonic 3 ships inside the app, so the first launch can speak without another
 
 Click the body. BOTTT copies an English prompt to the clipboard, blinks, and says `Copied. Paste it into your AI.` It does not read the long prompt aloud. While any line is spoken, including that Copied line, two to four words sit above the head and clear when the audio ends.
 
-The command inside the copied prompt is filled in at click time. It is the absolute path of `bottt` inside the app you opened (`BOTTT.app/Contents/MacOS/bottt` on that Mac). Move or unzip the app somewhere else, click again, and the path follows the app. Nothing in the prompt is a fixed home folder.
+The command inside the copied prompt is filled in at click time. It is the absolute path of `bottt` inside the app you opened (`BOTTT.app/Contents/Resources/bottt` on that Mac). Move or unzip the app somewhere else, click again, and the path follows the app. Nothing in the prompt is a fixed home folder.
 
 Paste that prompt into another Cursor chat. That chat should summarize the conversation and run the command from the prompt so BOTTT reads the summary once.
 
@@ -49,10 +49,10 @@ xcodebuild -project BOTTT.xcodeproj -scheme BOTTT -configuration Release -destin
 open .build/Build/Products/Release/BOTTT.app
 ```
 
-The `bottt` command copied into that app is `BOTTT.app/Contents/MacOS/bottt`. After the app is running:
+The `bottt` command copied into that app is `BOTTT.app/Contents/Resources/bottt`. After the app is running:
 
 ```bash
-.build/Build/Products/Release/BOTTT.app/Contents/MacOS/bottt say "your English summary here"
+.build/Build/Products/Release/BOTTT.app/Contents/Resources/bottt say "your English summary here"
 ```
 
 If the app is not running, the command exits non-zero and stderr is `BOTTT is not running`.

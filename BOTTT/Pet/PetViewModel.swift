@@ -262,11 +262,12 @@ enum BotttPaths {
         return nil
     }
 
-    /// 点击这一下时，本机正在运行的 App 里 `Contents/MacOS/bottt` 的绝对路径。
+    /// 点击这一下时，本机正在运行的 App 里 `Contents/Resources/bottt` 的绝对路径。
+    /// 不放在 MacOS 目录：不区分大小写的磁盘上会和 `BOTTT` 主程序撞名。
     /// 别人把 App 解压到自己的目录后再点，复制出来的就是那台机器上的路径。
     static func sayExecutable() -> String {
         let bundled = Bundle.main.bundleURL
-            .appendingPathComponent("Contents/MacOS/bottt")
+            .appendingPathComponent("Contents/Resources/bottt")
             .path
         if FileManager.default.isExecutableFile(atPath: bundled) {
             return bundled

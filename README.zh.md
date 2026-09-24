@@ -19,7 +19,7 @@ Supertonic 3 已经打进 App，第一次打开不用再下载就能说。Kokoro
 
 点在身体上，会把一段英文提示词复制到剪贴板，眨一下眼，并用当前语音说 `Copied. Paste it into your AI.` 不读那段长提示词。只要在发音，包括这句 Copied，头顶就显示 2–4 个词，说完就清掉。
 
-提示词里的命令路径是点击时按本机生成的。它是你打开的这个 App 里面的 `bottt`（这台 Mac 上的 `BOTTT.app/Contents/MacOS/bottt`）。把 App 解压或挪到别的目录后再点，路径会跟着 App 走，不是写死的家目录。
+提示词里的命令路径是点击时按本机生成的。它是你打开的这个 App 里面的 `bottt`（这台 Mac 上的 `BOTTT.app/Contents/Resources/bottt`）。把 App 解压或挪到别的目录后再点，路径会跟着 App 走，不是写死的家目录。
 
 把这段提示词贴进另一个 Cursor 对话。那个对话会先总结，再按提示词里的命令让 BOTTT 把总结读出来。
 
@@ -49,10 +49,10 @@ xcodebuild -project BOTTT.xcodeproj -scheme BOTTT -configuration Release -destin
 open .build/Build/Products/Release/BOTTT.app
 ```
 
-打进这个 App 的 `bottt` 命令在 `BOTTT.app/Contents/MacOS/bottt`。App 开着的时候：
+打进这个 App 的 `bottt` 命令在 `BOTTT.app/Contents/Resources/bottt`。App 开着的时候：
 
 ```bash
-.build/Build/Products/Release/BOTTT.app/Contents/MacOS/bottt say "your English summary here"
+.build/Build/Products/Release/BOTTT.app/Contents/Resources/bottt say "your English summary here"
 ```
 
 没开时退出码不是 0，stderr 是 `BOTTT is not running`。
