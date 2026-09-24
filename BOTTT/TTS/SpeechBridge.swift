@@ -153,6 +153,14 @@ final class SpeechBridge {
         if let models = BotttPaths.modelsDirectory() {
             environment["BOTTT_MODELS"] = models
         }
+        let pythonPrefix = Bundle.main.bundleURL
+            .appendingPathComponent("Contents/Resources/python")
+            .path
+        if python.hasPrefix(pythonPrefix) {
+            environment["PYTHONNOUSERSITE"] = "1"
+            environment["PYTHONHOME"] = pythonPrefix
+            environment.removeValue(forKey: "PYTHONPATH")
+        }
         proc.environment = environment
         let inPipe = Pipe()
         let outPipe = Pipe()
