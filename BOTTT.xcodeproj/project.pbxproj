@@ -11,6 +11,8 @@
 		B07100000000000000000042 /* PetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07100000000000000000032 /* PetView.swift */; };
 		B07100000000000000000043 /* PetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07100000000000000000033 /* PetViewModel.swift */; };
 		B07100000000000000000044 /* PetSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07100000000000000000034 /* PetSprite.swift */; };
+		B0710000000000000000004D /* PetExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0710000000000000000003D /* PetExpression.swift */; };
+		B0710000000000000000004E /* PetSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0710000000000000000003E /* PetSchedule.swift */; };
 		B07100000000000000000045 /* TTSProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07100000000000000000035 /* TTSProvider.swift */; };
 		B07100000000000000000046 /* AppleSpeechTTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B07100000000000000000036 /* AppleSpeechTTS.swift */; };
 		B0710000000000000000004B /* LocalModelTTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0710000000000000000003B /* LocalModelTTS.swift */; };
@@ -26,6 +28,8 @@
 		B07100000000000000000032 /* PetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetView.swift; sourceTree = "<group>"; };
 		B07100000000000000000033 /* PetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetViewModel.swift; sourceTree = "<group>"; };
 		B07100000000000000000034 /* PetSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSprite.swift; sourceTree = "<group>"; };
+		B0710000000000000000003D /* PetExpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetExpression.swift; sourceTree = "<group>"; };
+		B0710000000000000000003E /* PetSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetSchedule.swift; sourceTree = "<group>"; };
 		B07100000000000000000035 /* TTSProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSProvider.swift; sourceTree = "<group>"; };
 		B07100000000000000000036 /* AppleSpeechTTS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSpeechTTS.swift; sourceTree = "<group>"; };
 		B0710000000000000000003B /* LocalModelTTS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelTTS.swift; sourceTree = "<group>"; };
@@ -80,6 +84,8 @@
 				B07100000000000000000032 /* PetView.swift */,
 				B07100000000000000000033 /* PetViewModel.swift */,
 				B07100000000000000000034 /* PetSprite.swift */,
+				B0710000000000000000003D /* PetExpression.swift */,
+				B0710000000000000000003E /* PetSchedule.swift */,
 			);
 			path = Pet;
 			sourceTree = "<group>";
@@ -270,6 +276,8 @@
 				B07100000000000000000042 /* PetView.swift in Sources */,
 				B07100000000000000000043 /* PetViewModel.swift in Sources */,
 				B07100000000000000000044 /* PetSprite.swift in Sources */,
+				B0710000000000000000004D /* PetExpression.swift in Sources */,
+				B0710000000000000000004E /* PetSchedule.swift in Sources */,
 				B07100000000000000000045 /* TTSProvider.swift in Sources */,
 				B07100000000000000000046 /* AppleSpeechTTS.swift in Sources */,
 				B0710000000000000000004B /* LocalModelTTS.swift in Sources */,

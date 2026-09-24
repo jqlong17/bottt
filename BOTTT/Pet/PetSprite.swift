@@ -35,21 +35,6 @@ enum PetLook: String, CaseIterable, Identifiable, Equatable {
     }
 }
 
-/// 日程/模式分支可切换的姿势；本分支只提供枚举与绘制。
-enum PetPose: String, CaseIterable, Equatable {
-    case stand
-    case lift
-    case busy
-
-    var title: String {
-        switch self {
-        case .stand: return "站立"
-        case .lift: return "举重"
-        case .busy: return "忙碌"
-        }
-    }
-}
-
 enum PetSpriteMap {
     static let cols = 16
     /// 头顶留给帽子/螺旋；腿直接贴在身体下，中间不留空行。
@@ -188,7 +173,8 @@ enum PetSpriteMap {
 
     private static func applyPose(_ grid: inout [String], pose: PetPose) {
         switch pose {
-        case .stand:
+        case .stand, .talking:
+            // talking 只改嘴型（applyTalking），像素姿势仍用站立。
             break
         case .lift:
             // 头顶杠铃：两端铃片 + 横杆，双手举起；侧臂收起。
@@ -236,7 +222,10 @@ enum PetMetrics {
     static let defaultSpan: CGFloat = 80
     static let hopRows: CGFloat = 1
     /// 头顶字幕带。窗口往上长，脚还留在原来的位置。
-    static let captionBand: CGFloat = 26
+    static let captionBand: CGFloat = 28
+    /// 只放字幕时固定字号，约 5 个词一行，宽度可比身体更宽。
+    static let captionFontSize: CGFloat = 12
+    static let captionMinWidth: CGFloat = 260
 
     static func cell(span: CGFloat) -> CGFloat {
         max(1, span / CGFloat(PetSpriteMap.cols))
@@ -252,7 +241,10 @@ enum PetMetrics {
 
     static func windowSize(span: CGFloat) -> CGSize {
         let canvas = canvasSize(span: span)
-        return CGSize(width: canvas.width, height: canvas.height + captionBand)
+        return CGSize(
+            width: max(canvas.width, captionMinWidth),
+            height: canvas.height + captionBand
+        )
     }
 
     /// `point` 用视图坐标，原点在左下。空白像素返回 false，点击会穿过窗口。
@@ -266,9 +258,11 @@ enum PetMetrics {
     ) -> Bool {
         let cell = cell(span: span)
         guard cell > 0, bounds.width > 0, bounds.height > 0 else { return false }
+        let canvas = canvasSize(span: span)
+        let originX = (bounds.width - canvas.width) / 2
         let originTop = cell * hopRows
         let hop = talking ? cell : 0
-        let x = Int(floor(point.x / cell))
+        let x = Int(floor((point.x - originX) / cell))
         let yFromTop = bounds.height - point.y
         let row = Int(floor((yFromTop - originTop + hop) / cell))
         let grid = PetSpriteMap.pixels(look: look, pose: pose, talking: talking)
@@ -353,12 +347,13 @@ struct PetInk {
 }
 
 struct PetSprite: View {
-    var talking: Bool
+    var pose: PetPose
     var blinking: Bool
     var bodyColor: Color
     var span: CGFloat
     var look: PetLook = .squareEyes
-    var pose: PetPose = .stand
+
+    private var talking: Bool { pose == .talking }
 
     var body: some View {
         let size = PetMetrics.canvasSize(span: span)
@@ -374,7 +369,15 @@ struct PetSprite: View {
         let grid = PetSpriteMap.pixels(look: look, pose: pose, talking: talking)
         let cell = PetMetrics.cell(span: span)
         let originY = cell * PetMetrics.hopRows
-        let hop = talking ? cell : 0
+        let hop: CGFloat
+        switch pose {
+        case .talking, .lift:
+            hop = cell
+        case .busy:
+            hop = cell * 0.35
+        case .stand:
+            hop = 0
+        }
 
         context.withCGContext { cg in
             cg.setShouldAntialias(false)
