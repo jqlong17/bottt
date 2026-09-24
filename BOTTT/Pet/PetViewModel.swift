@@ -99,7 +99,7 @@ final class PetViewModel: ObservableObject {
         """
         Summarize this conversation into one short spoken paragraph in English. Plain sentences, no markdown, no bullet list, under about 60 words.
 
-        Then make BOTTT read it aloud once. BOTTT is not in this repository. It is already installed on the user's Mac. Any local agent that can run shell commands on this Mac works — for example Cursor, Codex, WorkBuddy, or Qoder. Run this command on the user's Mac, not in a cloud sandbox and not by searching the current project:
+        Then make BOTTT read it aloud once. BOTTT is not in this repository. It is already installed on the user's Mac. If your client supports MCP and the BOTTT MCP server is connected, prefer its speak tool with that English paragraph. Otherwise any local agent that can run shell commands on this Mac works — for example Cursor, Codex, WorkBuddy, or Qoder. Run this command on the user's Mac, not in a cloud sandbox and not by searching the current project:
 
         \(commandPath) say "your English summary here"
 
@@ -113,7 +113,7 @@ final class PetViewModel: ObservableObject {
 
         Put the file on ~/Desktop. Use a short descriptive title plus today's date as the filename, for example Focused-refactor-2026-09-25.md. The diary must include a timeline of what happened, the decision turning points, and a clear conclusion. Plain prose is fine; short markdown headings are OK.
 
-        BOTTT is not in this repository. It is already installed on the user's Mac. Any local agent that can run shell commands on this Mac works — for example Cursor, Codex, WorkBuddy, or Qoder. After the file is written, run these commands on the user's Mac, not in a cloud sandbox and not by searching the current project:
+        BOTTT is not in this repository. It is already installed on the user's Mac. If your client supports MCP and the BOTTT MCP server is connected, prefer its speak and smile tools after the file is written. Otherwise any local agent that can run shell commands on this Mac works — for example Cursor, Codex, WorkBuddy, or Qoder. After the file is written, run these commands on the user's Mac, not in a cloud sandbox and not by searching the current project:
 
         \(commandPath) say "\(PetExpression.diarySavedLine)"
         \(commandPath) smile
