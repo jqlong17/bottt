@@ -124,6 +124,7 @@
 				B07100000000000000000011 /* Sources */,
 				B07100000000000000000012 /* Frameworks */,
 				B07100000000000000000013 /* Resources */,
+				B07100000000000000000017 /* Embed bottt */,
 			);
 			buildRules = (
 			);
@@ -185,6 +186,24 @@
 /* End PBXProject section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		B07100000000000000000017 /* Embed bottt */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/bottt",
+				"$(SRCROOT)/tts/speech_worker.py",
+			);
+			name = "Embed bottt";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/Contents/MacOS/bottt",
+				"$(TARGET_BUILD_DIR)/$(WRAPPER_NAME)/Contents/Resources/tts/speech_worker.py",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nAPP=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\nmkdir -p \"${APP}/Contents/MacOS\" \"${APP}/Contents/Resources/tts\"\ncp -f \"${BUILT_PRODUCTS_DIR}/bottt\" \"${APP}/Contents/MacOS/bottt\"\nchmod +x \"${APP}/Contents/MacOS/bottt\"\ncp -f \"${SRCROOT}/tts/speech_worker.py\" \"${APP}/Contents/Resources/tts/speech_worker.py\"\ncodesign --force --sign - \"${APP}/Contents/MacOS/bottt\"\n";
+		};
 		B07100000000000000000015 /* Copy bottt */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -314,6 +333,7 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = BOTTT;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -347,6 +367,7 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = BOTTT;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";

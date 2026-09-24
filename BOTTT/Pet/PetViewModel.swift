@@ -77,9 +77,9 @@ final class PetViewModel: ObservableObject {
     }
     /// 空字符串表示这个本地插件已经能说。缺省或其它文字是不可用原因。
     @Published private(set) var voiceNotes: [String: String] = [
-        TTSPluginID.kokoro: "模型还在下载",
-        TTSPluginID.piper: "模型还在下载",
-        TTSPluginID.supertonic: "模型还在下载",
+        TTSPluginID.kokoro: "不可用，没有附带模型",
+        TTSPluginID.piper: "不可用，没有附带模型",
+        TTSPluginID.supertonic: "不可用，没有附带模型",
     ]
 
     private var tts: any TTSProvider
@@ -182,7 +182,7 @@ final class PetViewModel: ObservableObject {
             case "ok", "files":
                 notes[choice.id] = ""
             case "missing":
-                notes[choice.id] = state?.reason.isEmpty == false ? state!.reason : "模型还在下载"
+                notes[choice.id] = state?.reason.isEmpty == false ? state!.reason : "不可用，没有附带模型"
             case "slow", "error":
                 notes[choice.id] = state?.reason.isEmpty == false ? state!.reason : "不可用"
             default:
@@ -262,21 +262,70 @@ enum BotttPaths {
         return nil
     }
 
-    /// 点击这一下时，本机 `bottt` 可执行文件的绝对路径。换一台机器、换一个目录，点出来的路径就跟着变。
+    /// 点击这一下时，本机正在运行的 App 里 `Contents/MacOS/bottt` 的绝对路径。
+    /// 别人把 App 解压到自己的目录后再点，复制出来的就是那台机器上的路径。
     static func sayExecutable() -> String {
+        let bundled = Bundle.main.bundleURL
+            .appendingPathComponent("Contents/MacOS/bottt")
+            .path
+        if FileManager.default.isExecutableFile(atPath: bundled) {
+            return bundled
+        }
         if let root = repositoryRoot() {
             return root.appendingPathComponent(".build/bottt").path
         }
-        return Bundle.main.bundleURL
-            .deletingLastPathComponent()
-            .appendingPathComponent("bottt")
-            .standardizedFileURL
+        return bundled
+    }
+
+    static func speechWorker() -> String? {
+        let bundled = Bundle.main.bundleURL
+            .appendingPathComponent("Contents/Resources/tts/speech_worker.py")
             .path
+        if FileManager.default.fileExists(atPath: bundled) {
+            return bundled
+        }
+        if let root = repositoryRoot() {
+            let script = root.appendingPathComponent("tts/speech_worker.py").path
+            if FileManager.default.fileExists(atPath: script) {
+                return script
+            }
+        }
+        return nil
+    }
+
+    /// Supertonic 随 App 放在 `Contents/Resources/models`，或和 `.app` 放在同一层的 `models/`。
+    /// 从源码跑时再用仓库里的 `models/`。
+    static func modelsDirectory() -> String? {
+        let files = FileManager.default
+        var candidates: [String] = []
+        if let resources = Bundle.main.resourceURL {
+            candidates.append(resources.appendingPathComponent("models").path)
+        }
+        candidates.append(
+            Bundle.main.bundleURL
+                .deletingLastPathComponent()
+                .appendingPathComponent("models")
+                .path
+        )
+        if let root = repositoryRoot() {
+            candidates.append(root.appendingPathComponent("models").path)
+        }
+        for path in candidates {
+            let marker = (path as NSString).appendingPathComponent("supertonic/onnx/tts.json")
+            if files.fileExists(atPath: marker) {
+                return path
+            }
+        }
+        return candidates.first
     }
 
     static func pythonExecutable() -> String? {
+        let bundled = Bundle.main.bundleURL
+            .appendingPathComponent("Contents/Resources/python/bin/python3")
+            .path
         let home = FileManager.default.homeDirectoryForCurrentUser
         let candidates = [
+            bundled,
             home.appendingPathComponent(".local/bin/python3").path,
             "/opt/homebrew/bin/python3",
             "/usr/local/bin/python3",

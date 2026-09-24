@@ -22,7 +22,14 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent.parent / "models"
+def models_root() -> Path:
+    override = os.environ.get("BOTTT_MODELS", "").strip()
+    if override:
+        return Path(override)
+    return Path(__file__).resolve().parent.parent / "models"
+
+
+ROOT = models_root()
 SLOW_MS = 1100
 KOKORO_VOICE = "af_heart"
 
@@ -78,27 +85,27 @@ class Engines:
         voices = folder / "voices-v1.0.bin"
         expected = folder / "expected.json"
         if not expected.is_file():
-            return False, "模型还在下载"
+            return False, "不可用，没有附带模型"
         try:
             sizes = json.loads(expected.read_text())
         except json.JSONDecodeError:
-            return False, "模型还在下载"
+            return False, "不可用，没有附带模型"
         if not onnx.is_file() or onnx.stat().st_size != int(sizes.get("onnx", -1)):
-            return False, "模型还在下载"
+            return False, "不可用，没有附带模型"
         if not voices.is_file() or voices.stat().st_size != int(sizes.get("voices", -1)):
-            return False, "模型还在下载"
+            return False, "不可用，没有附带模型"
         return True, ""
 
     def _piper_ready(self) -> tuple[bool, str]:
         found = find_piper()
         if found is None:
-            return False, "模型还在下载"
+            return False, "不可用，没有附带模型"
         return True, ""
 
     def _supertonic_ready(self) -> tuple[bool, str]:
         cfg = ROOT / "supertonic" / "onnx" / "tts.json"
         if not cfg.is_file():
-            return False, "模型还在下载"
+            return False, "不可用，没有附带模型"
         return True, ""
 
     def ensure(self, name: str):
@@ -187,7 +194,7 @@ def load_piper():
 
     found = find_piper()
     if found is None:
-        raise RuntimeError("模型还在下载")
+        raise RuntimeError("不可用，没有附带模型")
     model, tokens, data = found
     config = sherpa_onnx.OfflineTtsConfig(
         model=sherpa_onnx.OfflineTtsModelConfig(

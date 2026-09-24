@@ -133,12 +133,11 @@ final class SpeechBridge {
 
     private func launchIfNeeded() {
         if process?.isRunning == true { return }
-        guard let root = BotttPaths.repositoryRoot(),
-              let python = BotttPaths.pythonExecutable() else {
+        guard let python = BotttPaths.pythonExecutable(),
+              let script = BotttPaths.speechWorker() else {
             noteAll(EngineState(state: "error", reason: "本机没有语音进程"))
             return
         }
-        let script = root.appendingPathComponent("tts/speech_worker.py").path
         guard FileManager.default.isExecutableFile(atPath: python),
               FileManager.default.fileExists(atPath: script) else {
             noteAll(EngineState(state: "error", reason: "本机没有语音进程"))
@@ -147,7 +146,14 @@ final class SpeechBridge {
         let proc = Process()
         proc.executableURL = URL(fileURLWithPath: python)
         proc.arguments = ["-u", script]
-        proc.currentDirectoryURL = root
+        if let root = BotttPaths.repositoryRoot() {
+            proc.currentDirectoryURL = root
+        }
+        var environment = ProcessInfo.processInfo.environment
+        if let models = BotttPaths.modelsDirectory() {
+            environment["BOTTT_MODELS"] = models
+        }
+        proc.environment = environment
         let inPipe = Pipe()
         let outPipe = Pipe()
         let errPipe = Pipe()
@@ -229,7 +235,7 @@ final class SpeechBridge {
             note(name, EngineState(state: "slow", reason: "首包 \(ms)ms，超过大约 1 秒"))
         } else if kind == "missing" {
             probed.remove(name)
-            note(name, EngineState(state: "missing", reason: parts.count > 1 ? parts[1] : "模型还在下载"))
+            note(name, EngineState(state: "missing", reason: parts.count > 1 ? parts[1] : "不可用，没有附带模型"))
         } else {
             note(name, EngineState(state: "error", reason: parts.count > 1 ? parts[1] : "装不上"))
         }
