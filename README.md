@@ -1,26 +1,18 @@
 # BOTTT
 
-A pixel pet on the desktop. The window is clear, so you just see the pet.
+BOTTT is a pixel pet that lives on the Mac desktop. The window is transparent, so the wallpaper stays visible and you only see the flat head, the short arms, and the four legs. Drag the body when you want it somewhere else, and right-click when you want a different color or size.
 
 ![BOTTT](docs/pet.png)
 
-Click it and it copies a prompt, then says a line. While it talks, two or three words pop up over its head and disappear when it stops. Drag the body to move it. Right-click to change the color or the size.
+Click the body and it copies an English prompt onto the clipboard, blinks, and says “Copied. Paste it into your AI.” It does not read the long prompt aloud. Whenever it is speaking, including that short line, two or three words show above its head and drop away as it moves on, until the line is finished and the caption is gone.
 
-The prompt tells another chat to summarize, then run `bottt` on your Mac. That path is filled in when you click. It is `BOTTT.app/Contents/Resources/bottt` wherever you put the app.
+That prompt is meant to be pasted into another Cursor chat. The other chat summarizes the conversation into a short spoken paragraph, then runs the `bottt` command written in the prompt so this pet reads the summary once. The path in the command is filled in at the moment you click, and it is `BOTTT.app/Contents/Resources/bottt` inside the app you actually opened, so a copy unzipped somewhere else gets that machine’s own path.
 
-## Install
+Download [BOTTT-mac.zip](https://github.com/jqlong17/bottt/releases/download/v1.0.0/BOTTT-mac.zip) from the [v1.0.0 release](https://github.com/jqlong17/bottt/releases/tag/v1.0.0), unzip it, and open `BOTTT.app`. You do not need Xcode. If macOS blocks the first launch, allow it in System Settings → Privacy & Security.
 
-No Xcode.
+The voice in the zip is Supertonic, which is what the pet uses unless you change it. Settings also lists Kokoro, Piper, and the Apple system voice, but this zip has no models for Kokoro or Piper, so those two are marked unavailable and Supertonic still speaks.
 
-Grab [BOTTT-mac.zip](https://github.com/jqlong17/bottt/releases/download/v1.0.0/BOTTT-mac.zip) from the [v1.0.0 release](https://github.com/jqlong17/bottt/releases/tag/v1.0.0). Unzip it and open `BOTTT.app`.
-
-If the Mac blocks the first open, go to System Settings → Privacy & Security and allow it.
-
-The default voice is the Supertonic that comes in the zip. Settings also lists Kokoro, Piper, and the Apple voice, and this zip has no models for Kokoro or Piper.
-
-## Build from source
-
-Open `BOTTT.xcodeproj`, pick the BOTTT scheme, and run it. Or from the repo:
+To build it yourself, clone [jqlong17/bottt](https://github.com/jqlong17/bottt), open `BOTTT.xcodeproj`, choose the BOTTT scheme, and run. From the repository root:
 
 ```bash
 xcodebuild -project BOTTT.xcodeproj -scheme BOTTT -configuration Release -destination 'platform=macOS' -derivedDataPath .build build
