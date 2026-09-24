@@ -7,42 +7,48 @@ struct PetView: View {
     var body: some View {
         let span = CGFloat(viewModel.petSpan)
         let canvas = PetMetrics.canvasSize(span: span)
+        let window = PetMetrics.windowSize(span: span)
         VStack(spacing: 0) {
             ZStack {
                 if !viewModel.caption.isEmpty {
                     Text(viewModel.caption)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.system(size: PetMetrics.captionFontSize, weight: .semibold))
                         .foregroundStyle(Color.white.opacity(0.96))
                         .lineLimit(1)
-                        .minimumScaleFactor(0.55)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
+                        .fixedSize(horizontal: true, vertical: false)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
                         .background(Color.black.opacity(0.62), in: RoundedRectangle(cornerRadius: 4, style: .continuous))
                 }
             }
-            .frame(width: canvas.width, height: PetMetrics.captionBand)
+            .frame(width: window.width, height: PetMetrics.captionBand)
             .allowsHitTesting(false)
-            PetSprite(
-                talking: viewModel.mood == .talking,
-                blinking: viewModel.blinking,
-                bodyColor: viewModel.bodyColor,
-                span: span
-            )
-            .overlay {
-                PetClickSurface(
-                    talking: viewModel.mood == .talking,
-                    span: span,
-                    settingsOpen: viewModel.showSettings,
-                    onClick: {
-                        NSApp.activate()
-                        viewModel.copyPrompt()
-                    },
-                    onRightClick: {
-                        NSApp.activate()
-                        viewModel.showSettings = true
-                    }
+            HStack(spacing: 0) {
+                Spacer(minLength: 0)
+                PetSprite(
+                    pose: viewModel.pose,
+                    blinking: viewModel.blinking,
+                    bodyColor: viewModel.bodyColor,
+                    span: span
                 )
+                .overlay {
+                    PetClickSurface(
+                        talking: viewModel.pose == .talking,
+                        span: span,
+                        settingsOpen: viewModel.showSettings,
+                        onClick: {
+                            NSApp.activate()
+                            viewModel.copyPrompt()
+                        },
+                        onRightClick: {
+                            NSApp.activate()
+                            viewModel.showSettings = true
+                        }
+                    )
+                }
+                Spacer(minLength: 0)
             }
+            .frame(width: window.width, height: canvas.height)
         }
         .popover(isPresented: $viewModel.showSettings, arrowEdge: .top) {
             PetSettingsPanel(viewModel: viewModel)
@@ -52,7 +58,7 @@ struct PetView: View {
         .background(Color.clear)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("BOTTT")
-        .accessibilityHint("Click to copy a summary prompt and hear a short confirmation. Right-click for color, size, and voice.")
+        .accessibilityHint("Click to copy a prompt and hear a short confirmation. Right-click for settings.")
         .accessibilityAddTraits(.isButton)
     }
 }
@@ -61,7 +67,7 @@ private struct PetSettingsPanel: View {
     @ObservedObject var viewModel: PetViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("BOTTT")
                 .font(.headline)
             ColorPicker("身体颜色", selection: $viewModel.bodyColor, supportsOpacity: false)
@@ -74,11 +80,34 @@ private struct PetSettingsPanel: View {
                     step: 1
                 )
             }
+            VStack(alignment: .leading, spacing: 6) {
+                Text("说话")
+                    .font(.subheadline)
+                Picker("说话", selection: $viewModel.speechMode) {
+                    ForEach(PetSpeechMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                Text("点击提示词")
+                    .font(.subheadline)
+                Picker("点击提示词", selection: $viewModel.promptMode) {
+                    ForEach(PetPromptMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+            }
             Picker("语音", selection: $viewModel.voiceID) {
                 ForEach(viewModel.voiceChoices()) { choice in
                     Text(choice.title).tag(choice.id)
                 }
             }
+            .disabled(viewModel.speechMode == .captionsOnly)
             ForEach(viewModel.blockedVoices(), id: \.0.id) { item in
                 Text("\(item.0.title)：\(item.1)")
                     .font(.caption)
@@ -87,7 +116,9 @@ private struct PetSettingsPanel: View {
             }
         }
         .padding(16)
-        .frame(width: 280)
+        .frame(width: 300)
+        // 不要 Divider / Form section，避免右键设置面板出现虚线分隔。
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 }
 

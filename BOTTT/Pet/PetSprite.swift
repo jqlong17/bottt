@@ -46,7 +46,10 @@ enum PetMetrics {
     static let defaultSpan: CGFloat = 80
     static let hopRows: CGFloat = 1
     /// 头顶字幕带。窗口往上长，脚还留在原来的位置。
-    static let captionBand: CGFloat = 26
+    static let captionBand: CGFloat = 28
+    /// 只放字幕时固定字号，约 5 个词一行，宽度可比身体更宽。
+    static let captionFontSize: CGFloat = 12
+    static let captionMinWidth: CGFloat = 260
 
     static func cell(span: CGFloat) -> CGFloat {
         max(1, span / CGFloat(PetSpriteMap.cols))
@@ -62,16 +65,21 @@ enum PetMetrics {
 
     static func windowSize(span: CGFloat) -> CGSize {
         let canvas = canvasSize(span: span)
-        return CGSize(width: canvas.width, height: canvas.height + captionBand)
+        return CGSize(
+            width: max(canvas.width, captionMinWidth),
+            height: canvas.height + captionBand
+        )
     }
 
     /// `point` 用视图坐标，原点在左下。空白像素返回 false，点击会穿过窗口。
     static func isSolid(point: CGPoint, bounds: CGRect, span: CGFloat, talking: Bool) -> Bool {
         let cell = cell(span: span)
         guard cell > 0, bounds.width > 0, bounds.height > 0 else { return false }
+        let canvas = canvasSize(span: span)
+        let originX = (bounds.width - canvas.width) / 2
         let originTop = cell * hopRows
         let hop = talking ? cell : 0
-        let x = Int(floor(point.x / cell))
+        let x = Int(floor((point.x - originX) / cell))
         let yFromTop = bounds.height - point.y
         let row = Int(floor((yFromTop - originTop + hop) / cell))
         let grid = PetSpriteMap.pixels(talking: talking)
@@ -135,7 +143,7 @@ struct PetInk {
 }
 
 struct PetSprite: View {
-    var talking: Bool
+    var pose: PetPose
     var blinking: Bool
     var bodyColor: Color
     var span: CGFloat
@@ -151,10 +159,20 @@ struct PetSprite: View {
     }
 
     private func draw(context: inout GraphicsContext, span: CGFloat, ink: PetInk) {
+        // 形象分支会接 lift / busy 帧与微笑脸；此处先复用 idle/talking 像素，只把姿势枚举接好。
+        let talking = pose == .talking
         let grid = PetSpriteMap.pixels(talking: talking)
         let cell = PetMetrics.cell(span: span)
         let originY = cell * PetMetrics.hopRows
-        let hop = talking ? cell : 0
+        let hop: CGFloat
+        switch pose {
+        case .talking, .lift:
+            hop = cell
+        case .busy:
+            hop = cell * 0.35
+        case .stand:
+            hop = 0
+        }
 
         context.withCGContext { cg in
             cg.setShouldAntialias(false)

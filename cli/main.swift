@@ -4,14 +4,29 @@ import Foundation
 let socketPath = NSHomeDirectory() + "/Library/Application Support/BOTTT/bottt.sock"
 
 let arguments = Array(CommandLine.arguments.dropFirst())
-guard arguments.first == "say", arguments.count >= 2 else {
-    fputs("usage: bottt say \"text\"\n", stderr)
+guard let command = arguments.first else {
+    fputs("usage: bottt say \"text\"\n       bottt smile\n", stderr)
     exit(2)
 }
 
-let text = arguments.dropFirst().joined(separator: " ")
-guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-    fputs("usage: bottt say \"text\"\n", stderr)
+let payload: String
+switch command {
+case "say":
+    guard arguments.count >= 2 else {
+        fputs("usage: bottt say \"text\"\n", stderr)
+        exit(2)
+    }
+    let text = arguments.dropFirst().joined(separator: " ")
+    guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        fputs("usage: bottt say \"text\"\n", stderr)
+        exit(2)
+    }
+    payload = text
+case "smile":
+    // 控制帧：App 收到后触发开心表情，不朗读。
+    payload = "__bottt__:smile"
+default:
+    fputs("usage: bottt say \"text\"\n       bottt smile\n", stderr)
     exit(2)
 }
 
@@ -51,8 +66,8 @@ if connected != 0 {
     exit(1)
 }
 
-var payload = Array(text.utf8)
-let written = payload.withUnsafeMutableBytes { buffer -> Int in
+var bytes = Array(payload.utf8)
+let written = bytes.withUnsafeMutableBytes { buffer -> Int in
     guard let base = buffer.baseAddress else { return -1 }
     var sent = 0
     while sent < buffer.count {
