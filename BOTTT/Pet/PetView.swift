@@ -26,12 +26,16 @@ struct PetView: View {
                 talking: viewModel.mood == .talking,
                 blinking: viewModel.blinking,
                 bodyColor: viewModel.bodyColor,
-                span: span
+                span: span,
+                look: viewModel.displayLook,
+                pose: viewModel.pose
             )
             .overlay {
                 PetClickSurface(
                     talking: viewModel.mood == .talking,
                     span: span,
+                    look: viewModel.displayLook,
+                    pose: viewModel.pose,
                     settingsOpen: viewModel.showSettings,
                     onClick: {
                         NSApp.activate()
@@ -60,6 +64,10 @@ struct PetView: View {
 private struct PetSettingsPanel: View {
     @ObservedObject var viewModel: PetViewModel
 
+    private let lookColumns = [
+        GridItem(.adaptive(minimum: 52), spacing: 8),
+    ]
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("BOTTT")
@@ -74,6 +82,49 @@ private struct PetSettingsPanel: View {
                     step: 1
                 )
             }
+            VStack(alignment: .leading, spacing: 8) {
+                Text("形象")
+                    .font(.subheadline)
+                LazyVGrid(columns: lookColumns, spacing: 8) {
+                    ForEach(PetLook.allCases) { look in
+                        Button {
+                            viewModel.look = look
+                        } label: {
+                            VStack(spacing: 4) {
+                                PetSprite(
+                                    talking: false,
+                                    blinking: false,
+                                    bodyColor: viewModel.bodyColor,
+                                    span: 48,
+                                    look: look,
+                                    pose: .stand
+                                )
+                                .frame(width: 48, height: PetMetrics.canvasSize(span: 48).height)
+                                .clipped()
+                                Text(look.title)
+                                    .font(.caption2)
+                                    .lineLimit(1)
+                                    .foregroundStyle(.primary)
+                            }
+                            .padding(6)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .fill(viewModel.look == look ? Color.accentColor.opacity(0.18) : Color.clear)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .strokeBorder(
+                                        viewModel.look == look ? Color.accentColor.opacity(0.55) : Color.secondary.opacity(0.2),
+                                        lineWidth: 1
+                                    )
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .help(look.title)
+                    }
+                }
+            }
             Picker("语音", selection: $viewModel.voiceID) {
                 ForEach(viewModel.voiceChoices()) { choice in
                     Text(choice.title).tag(choice.id)
@@ -87,7 +138,7 @@ private struct PetSettingsPanel: View {
             }
         }
         .padding(16)
-        .frame(width: 280)
+        .frame(width: 300)
     }
 }
 
@@ -95,6 +146,8 @@ private struct PetSettingsPanel: View {
 private struct PetClickSurface: NSViewRepresentable {
     var talking: Bool
     var span: CGFloat
+    var look: PetLook
+    var pose: PetPose
     var settingsOpen: Bool
     var onClick: () -> Void
     var onRightClick: () -> Void
@@ -115,6 +168,8 @@ private struct PetClickSurface: NSViewRepresentable {
         nsView.onRightClick = onRightClick
         nsView.talking = talking
         nsView.span = span
+        nsView.look = look
+        nsView.pose = pose
         nsView.settingsOpen = settingsOpen
         nsView.onWindow = { window in
             context.coordinator.attach(window, view: nsView)
@@ -228,6 +283,8 @@ private final class PetDragView: NSView {
     var onWindow: ((NSWindow) -> Void)?
     var talking = false
     var span: CGFloat = PetMetrics.defaultSpan
+    var look: PetLook = .squareEyes
+    var pose: PetPose = .stand
     var settingsOpen = false
     private(set) var isDragging = false
     private var screenStart: NSPoint?
@@ -248,7 +305,14 @@ private final class PetDragView: NSView {
         guard window.frame.contains(screenPoint) else { return false }
         let inWindow = window.convertPoint(fromScreen: screenPoint)
         let local = convert(inWindow, from: nil)
-        return PetMetrics.isSolid(point: local, bounds: bounds, span: span, talking: talking)
+        return PetMetrics.isSolid(
+            point: local,
+            bounds: bounds,
+            span: span,
+            talking: talking,
+            look: look,
+            pose: pose
+        )
     }
 
     override func mouseDown(with event: NSEvent) {

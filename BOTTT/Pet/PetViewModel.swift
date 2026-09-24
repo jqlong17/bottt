@@ -5,6 +5,7 @@ import SwiftUI
 enum PetSettings {
     static let colorKey = "bottt.bodyColorHex"
     static let spanKey = "bottt.petSpan"
+    static let lookKey = "bottt.look"
     /// 参考形象那块身体色：偏橙的暖黄。
     static let defaultHex = "#B86850"
 
@@ -26,6 +27,15 @@ enum PetSettings {
     static func save(span: Double) {
         let clamped = min(Double(PetMetrics.maxSpan), max(Double(PetMetrics.minSpan), span))
         UserDefaults.standard.set(clamped, forKey: spanKey)
+    }
+
+    static func look() -> PetLook {
+        let raw = UserDefaults.standard.string(forKey: lookKey) ?? PetLook.squareEyes.rawValue
+        return PetLook(rawValue: raw) ?? .squareEyes
+    }
+
+    static func save(look: PetLook) {
+        UserDefaults.standard.set(look.rawValue, forKey: lookKey)
     }
 
     static let voiceKey = "bottt.ttsPlugin"
@@ -65,6 +75,14 @@ final class PetViewModel: ObservableObject {
     @Published var petSpan: Double {
         didSet { PetSettings.save(span: petSpan) }
     }
+    /// 设置里选的形象，持久化。
+    @Published var look: PetLook {
+        didSet { PetSettings.save(look: look) }
+    }
+    /// 日程分支可改：站立 / 早间举重 / 忙碌。
+    @Published private(set) var pose: PetPose = .stand
+    /// 日记写完等场景：短暂微笑，不改用户选中的形象。
+    @Published private(set) var smileOverride = false
     @Published var voiceID: String {
         didSet {
             guard voiceID != oldValue else { return }
@@ -82,10 +100,16 @@ final class PetViewModel: ObservableObject {
         TTSPluginID.supertonic: "不可用，没有附带模型",
     ]
 
+    /// 实际绘制用的形象：微笑覆盖优先于设置里的选择。
+    var displayLook: PetLook {
+        smileOverride ? .smile : look
+    }
+
     private var tts: any TTSProvider
     private let sayServer = SayServer()
     private var blinkToken = 0
     private var captionToken = 0
+    private var smileToken = 0
     private var captionGroups: [String] = []
     private var suppressVoicePick = false
 
@@ -101,6 +125,7 @@ final class PetViewModel: ObservableObject {
         UserDefaults.standard.set(initialVoice, forKey: PetSettings.voiceKey)
         bodyColor = PetSettings.color()
         petSpan = PetSettings.span()
+        look = PetSettings.look()
         voiceID = initialVoice
         tts = TTSRegistry.make(id: initialVoice)
         bindVoice()
@@ -116,6 +141,24 @@ final class PetViewModel: ObservableObject {
         }
         SpeechBridge.shared.prepare(engine: initialVoice)
         SpeechBridge.shared.start()
+    }
+
+    /// 早上举重、偶尔忙碌等：由 modes 分支调用；此处只切姿势。
+    func setPose(_ pose: PetPose) {
+        self.pose = pose
+    }
+
+    /// 日记写完的开心：暂时换成微笑，再回到用户选的形象。
+    func flashSmile(seconds: Double = 2.5) {
+        smileToken += 1
+        let token = smileToken
+        smileOverride = true
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: UInt64(max(0.2, seconds) * 1_000_000_000))
+            if self.smileToken == token {
+                self.smileOverride = false
+            }
+        }
     }
 
     func voiceChoices() -> [TTSChoice] {

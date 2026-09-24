@@ -11,7 +11,7 @@ struct BOTTTApp: App {
         .windowStyle(.plain)
         .windowResizability(.contentSize)
         .windowLevel(.floating)
-        .defaultSize(width: 80, height: 96)
+        .defaultSize(width: 80, height: 121)
         .defaultPosition(.bottomTrailing)
         .commands {
             CommandGroup(replacing: .newItem) {}
