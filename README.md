@@ -4,6 +4,26 @@ BOTTT is a transparent pixel pet that sits on the Mac desktop. The wallpaper sta
 
 ![BOTTT](docs/pet.png)
 
+The board below is the default look plus every face you can pick in Settings (the checkerboard is the transparent background):
+
+![BOTTT looks](docs/looks-gallery.svg)
+
+
+<p align="center">
+  <img src="docs/looks/default.png" height="72" alt="square eyes" />
+  <img src="docs/looks/glasses.png" height="72" alt="glasses" />
+  <img src="docs/looks/smile.png" height="72" alt="smile" />
+  <img src="docs/looks/mustache.png" height="72" alt="mustache" />
+  <img src="docs/looks/sharp.png" height="72" alt="sharp eyes" />
+  <img src="docs/looks/wizard.png" height="72" alt="wizard" />
+  <img src="docs/looks/party.png" height="72" alt="party" />
+  <img src="docs/looks/chef.png" height="72" alt="chef" />
+  <img src="docs/looks/heart.png" height="72" alt="heart" />
+  <img src="docs/looks/flag.png" height="72" alt="flag" />
+  <img src="docs/looks/dizzy.png" height="72" alt="dizzy" />
+</p>
+
+
 Click the body and it copies a mode-specific English prompt to the clipboard, then says a short confirmation such as “Copied. Paste it into your AI.” It does not read the full prompt aloud. In Settings you can leave the voice on, or keep only the captions above its head.
 
 There are two click modes. Summary mode asks another chat to turn the conversation into a short spoken paragraph and then have BOTTT read it. Diary mode asks that chat to write a short English desktop diary entry with a title and a date, and after the entry is done the pet looks happy for a moment. The copied prompt prefers the BOTTT MCP tools when the client has them, and falls back to the local shell command otherwise. The path written into that fallback is filled in when you click, pointing at `BOTTT.app/Contents/Resources/bottt` for the copy you actually launched, so it is never a hard-coded home directory.

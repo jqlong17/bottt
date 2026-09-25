@@ -4,6 +4,26 @@ BOTTT 是一只待在 macOS 桌面上的透明像素宠物。壁纸从扁扁的�
 
 ![BOTTT](docs/pet.png)
 
+下面这张图汇总了默认主形象，以及设置里目前可选的全部样子（灰白格表示透明背景）：
+
+![BOTTT 形象一览](docs/looks-gallery.svg)
+
+
+<p align="center">
+  <img src="docs/looks/default.png" height="72" alt="方眼" />
+  <img src="docs/looks/glasses.png" height="72" alt="眼镜" />
+  <img src="docs/looks/smile.png" height="72" alt="微笑" />
+  <img src="docs/looks/mustache.png" height="72" alt="胡子" />
+  <img src="docs/looks/sharp.png" height="72" alt="尖眼" />
+  <img src="docs/looks/wizard.png" height="72" alt="巫师" />
+  <img src="docs/looks/party.png" height="72" alt="派对" />
+  <img src="docs/looks/chef.png" height="72" alt="厨师" />
+  <img src="docs/looks/heart.png" height="72" alt="爱心" />
+  <img src="docs/looks/flag.png" height="72" alt="旗" />
+  <img src="docs/looks/dizzy.png" height="72" alt="头晕" />
+</p>
+
+
 点在身体上，它会按当前模式把一段英文提示词放进剪贴板，再说一句确认，例如 “Copied. Paste it into your AI.”，并不会把整段提示词念出来。设置里可以选择出声，也可以只留头顶的字幕。
 
 点击有两种模式。总结模式让另一个对话把当前聊天收成一小段口语，再让 BOTTT 读出来。日记模式则让那边写成一篇桌面上的英文日记，带着标题和日期；日记写完之后，它会开心一下。复制出来的提示词会优先建议走 BOTTT 的 MCP 工具；客户端没有 MCP 时，再退回本机 shell 命令。提示词里的路径是点击那一下填进去的，指向你正在用的 `BOTTT.app/Contents/Resources/bottt`，不会写死某个用户的家目录。
