@@ -20,7 +20,7 @@ jobs:
           import hashlib
           c=open('docs/looks-gallery.svg').read()
           assert len(c)==38806
-          assert hashlib.sha256(c.encode()).hexdigest()=='b373ace6bfa7b0f483b2244870f1d413091c5f17f4f9dbd07d2f1d413091c5f17f4f9dbd07d2f1b4a52d7be4c'
+          assert hashlib.sha256(c.encode()).hexdigest()=='b373ace6bfa7b0f483b2244870f1d413091c5f17f4f9dbd07d2f1b4a52d7be4c'
           print('ok')
           PY
       - name: Commit assembled SVG
