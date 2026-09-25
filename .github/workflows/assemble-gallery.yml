@@ -1,0 +1,33 @@
+name: assemble-gallery
+on:
+  push:
+    paths:
+      - 'docs/.gallery-parts/**'
+      - '.github/workflows/assemble-gallery.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble SVG
+        run: |
+          cat docs/.gallery-parts/0 docs/.gallery-parts/1 docs/.gallery-parts/2 docs/.gallery-parts/3 docs/.gallery-parts/4 docs/.gallery-parts/5 docs/.gallery-parts/6 docs/.gallery-parts/7 docs/.gallery-parts/8 > docs/looks-gallery.svg
+          wc -c docs/looks-gallery.svg
+          python3 - <<'PY'
+          import hashlib
+          c=open('docs/looks-gallery.svg').read()
+          assert len(c)==38806
+          assert hashlib.sha256(c.encode()).hexdigest()=='b373ace6bfa7b0f483b2244870f1d413091c5f17f4f9dbd07d2f1d413091c5f17f4f9dbd07d2f1b4a52d7be4c'
+          print('ok')
+          PY
+      - name: Commit assembled SVG
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/looks-gallery.svg
+          git diff --cached --quiet && echo "no change" && exit 0
+          git commit -m "Add BOTTT looks gallery collage (SVG with embedded PNG)."
+          git push
